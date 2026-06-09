@@ -10,21 +10,47 @@
 :root{
   --bg:#0b0d14;--surface:#111520;--surface2:#171c2b;--border:#1e2438;
   --text:#e2e4ef;--muted:#5a6080;
+  --accent:#4f46e5;--accent2:#818cf8;
   --green:#22c55e;--red:#ef4444;--purple:#818cf8;--yellow:#facc15;--blue:#60a5fa;--orange:#fb923c;
 }
-body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui;min-height:100vh;transition:background .3s,color .3s}
 button,input,select{font-family:inherit}
 .app{max-width:860px;margin:0 auto;padding:24px 20px 60px}
 
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg)}
+.login-box{background:var(--surface);border:0.5px solid var(--border);border-radius:20px;padding:40px 36px;width:100%;max-width:360px;text-align:center}
+.login-emoji{font-size:48px;margin-bottom:16px}
+.login-title{font-size:20px;font-weight:600;color:var(--text);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .2s}
+.pin-dot.filled{background:var(--accent)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.pin-btn{padding:16px;border:0.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);font-size:20px;font-weight:500;cursor:pointer;transition:all .15s}
+.pin-btn:hover{background:var(--border)}
+.pin-btn:active{transform:scale(0.95)}
+.pin-error{color:var(--red);font-size:13px;min-height:20px}
+.greeting-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg);flex-direction:column;gap:16px}
+.greeting-text{font-size:28px;font-weight:600;color:var(--text);opacity:0;transform:translateY(20px);transition:all .6s}
+.greeting-text.show{opacity:1;transform:translateY(0)}
+.greeting-sub{font-size:15px;color:var(--muted);opacity:0;transition:all .6s .2s}
+.greeting-sub.show{opacity:1}
+
+/* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:32px;height:32px;background:#4f46e5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.logo-text{font-size:17px;font-weight:600;color:#fff}
+.logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-size:17px;font-weight:600;color:var(--text)}
 .logo-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:8px}
 .sync-badge{background:var(--surface2);border:0.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
 .sync-dot.ok{background:var(--green)}.sync-dot.saving{background:var(--yellow)}.sync-dot.err{background:var(--red)}
+.icon-btn{width:32px;height:32px;border:0.5px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.icon-btn:hover{background:var(--border);color:var(--text)}
 
+/* CARDS */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
 .card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
@@ -36,10 +62,12 @@ button,input,select{font-family:inherit}
 .card.cp .cval{color:var(--purple)}.card.cb .cval{color:var(--yellow)}
 .csub{font-size:11px;color:var(--muted);margin-top:4px}
 
+/* TABS */
 .tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:4px}
 .tab{flex:1;padding:8px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;transition:all .15s}
 .tab.on{background:var(--surface2);color:var(--text);border:0.5px solid var(--border)}
 
+/* FORM */
 .form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:20px}
 .ftitle{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:14px}
 .type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
@@ -58,13 +86,14 @@ button,input,select{font-family:inherit}
 .ccat[data-c="прочее"].on{color:var(--muted);background:var(--surface2);border-color:var(--muted)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .inp{width:100%;background:var(--surface2);border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;transition:border .15s}
-.inp:focus{border-color:#4f46e5}
+.inp:focus{border-color:var(--accent)}
 select.inp{appearance:none;cursor:pointer}
 .field{margin-bottom:14px}
-.submit{width:100%;padding:11px;background:#4f46e5;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:2px}
-.submit:hover{background:#4338ca}
-.submit:disabled{background:#2a2560;color:#666;cursor:not-allowed}
+.submit{width:100%;padding:11px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:2px}
+.submit:hover{opacity:.9}
+.submit:disabled{opacity:.4;cursor:not-allowed}
 
+/* HISTORY */
 .h-date-group{margin-top:16px}
 .h-date-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;padding-left:2px}
 .h-item{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
@@ -75,10 +104,11 @@ select.inp{appearance:none;cursor:pointer}
 .h-right{display:flex;align-items:center;gap:8px}
 .h-amt{font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
 .h-amt.inc{color:var(--green)}.h-amt.exp{color:var(--red)}
-.h-del{background:none;border:none;color:#2a2a3a;cursor:pointer;font-size:20px;padding:0;transition:color .15s;line-height:1}
+.h-del{background:none;border:none;color:var(--border);cursor:pointer;font-size:20px;padding:0;transition:color .15s;line-height:1}
 .h-del:hover{color:var(--red)}
 .empty-msg{text-align:center;color:var(--muted);padding:48px 0;font-size:13px}
 
+/* CHARTS */
 .chart-section{margin-bottom:24px}
 .chart-header{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:12px}
 .chart-wrap{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:16px}
@@ -93,124 +123,224 @@ select.inp{appearance:none;cursor:pointer}
 .leg-item{display:flex;align-items:center;gap:5px}
 .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
+/* SETTINGS PANEL */
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.settings-overlay.open{display:flex}
+.settings-panel{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:860px;max-height:80vh;overflow-y:auto}
+.settings-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.settings-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:20px}
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.theme-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.theme-btn{padding:10px 8px;border:0.5px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer;text-align:center;transition:all .15s}
+.theme-btn.on{border-color:var(--accent);color:var(--accent)}
+.color-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.color-row{display:flex;align-items:center;gap:10px}
+.color-label{font-size:12px;color:var(--muted);flex:1}
+.color-input{width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--surface2)}
+.close-settings{width:100%;padding:12px;background:var(--surface2);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;margin-top:8px}
+
+/* LOADING */
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;color:var(--muted);font-size:13px}
-.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:#4f46e5;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;text-align:center}
 .error-icon{font-size:40px}
 .error-msg{font-size:14px;color:var(--muted);max-width:300px;line-height:1.6}
-.retry-btn{padding:10px 24px;background:#4f46e5;border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer}
+.retry-btn{padding:10px 24px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer}
+
+/* LIGHT THEME */
+body.light{
+  --bg:#f4f6fb;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e6f0;
+  --text:#1a1d2e;--muted:#8892b0;
+}
+/* PURPLE THEME */
+body.purple{
+  --bg:#0d0a1a;--surface:#130f26;--surface2:#1a1535;--border:#2a2050;
+  --text:#e8e0ff;--muted:#7060a0;--accent:#9f7aea;--accent2:#b794f4;
+}
+/* OCEAN THEME */
+body.ocean{
+  --bg:#050f1a;--surface:#0a1628;--surface2:#0f1f38;--border:#1a3050;
+  --text:#e0f0ff;--muted:#4a7090;--accent:#0ea5e9;--accent2:#38bdf8;
+}
+/* FOREST THEME */
+body.forest{
+  --bg:#060f0a;--surface:#0a1a0f;--surface2:#0f2418;--border:#1a3a22;
+  --text:#e0ffe8;--muted:#4a7050;--accent:#22c55e;--accent2:#4ade80;
+}
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="header">
-    <div class="logo">
-      <div class="logo-icon">💸</div>
-      <div>
-        <div class="logo-text">Finance Tracker</div>
-        <div class="logo-sub">Плеерка · Фан Пей · Личное</div>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-emoji">💸</div>
+    <div class="login-title">Finance Tracker</div>
+    <div class="login-sub">Введи пин-код для входа</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn" onclick="pinClear()" style="font-size:13px">Стереть</button>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn" onclick="pinClear(true)" style="font-size:13px">✕</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+  </div>
+</div>
+
+<!-- GREETING -->
+<div class="greeting-screen" id="greeting-screen">
+  <div class="greeting-text" id="greeting-text"></div>
+  <div class="greeting-sub" id="greeting-sub">Твои финансы под контролем 💪</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+  <div class="app">
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">💸</div>
+        <div>
+          <div class="logo-text">Finance Tracker</div>
+          <div class="logo-sub">Плеерка · Фан Пей · Личное</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="sync-badge" onclick="loadData()">
+          <div class="sync-dot" id="sync-dot"></div>
+          <span id="sync-label">загрузка...</span>
+        </div>
+        <button class="icon-btn" onclick="openSettings()" title="Настройки">⚙️</button>
       </div>
     </div>
-    <div class="sync-badge" onclick="loadData()">
-      <div class="sync-dot" id="sync-dot"></div>
-      <span id="sync-label">загрузка...</span>
+
+    <div id="loading-screen" class="loading-screen">
+      <div class="spinner"></div>
+      <span>Загружаем данные...</span>
     </div>
-  </div>
-
-  <div id="loading-screen" class="loading-screen">
-    <div class="spinner"></div>
-    <span>Подключаемся к базе данных...</span>
-  </div>
-
-  <div id="error-screen" class="error-screen" style="display:none">
-    <div class="error-icon">⚠️</div>
-    <div class="error-msg">Не удалось подключиться к базе данных. Проверь интернет или попробуй снова.</div>
-    <button class="retry-btn" onclick="loadData()">Попробовать снова</button>
-  </div>
-
-  <div id="main-content" style="display:none">
-    <div class="cards">
-      <div class="card ci"><div class="clabel">Доходы</div><div class="cval" id="c-inc">0 ₽</div><div class="csub" id="c-inc-sub">—</div></div>
-      <div class="card ce"><div class="clabel">Расходы</div><div class="cval" id="c-exp">0 ₽</div><div class="csub" id="c-exp-sub">—</div></div>
-      <div class="card cp"><div class="clabel">Прибыль</div><div class="cval" id="c-pro">0 ₽</div><div class="csub" id="c-pro-sub">маржа —</div></div>
-      <div class="card cb"><div class="clabel">Баланс</div><div class="cval" id="c-bal">0 ₽</div><div class="csub" id="c-bal-sub">—</div></div>
+    <div id="error-screen" class="error-screen" style="display:none">
+      <div class="error-icon">⚠️</div>
+      <div class="error-msg">Не удалось подключиться. Проверь интернет.</div>
+      <button class="retry-btn" onclick="loadData()">Попробовать снова</button>
     </div>
 
-    <div class="tabs">
-      <button class="tab on" onclick="showTab('add')">＋ Добавить</button>
-      <button class="tab" onclick="showTab('charts')">📊 Графики</button>
-      <button class="tab" onclick="showTab('history')">📋 История</button>
-    </div>
+    <div id="main-content" style="display:none">
+      <div class="cards">
+        <div class="card ci"><div class="clabel">Доходы</div><div class="cval" id="c-inc">0 ₽</div><div class="csub" id="c-inc-sub">—</div></div>
+        <div class="card ce"><div class="clabel">Расходы</div><div class="cval" id="c-exp">0 ₽</div><div class="csub" id="c-exp-sub">—</div></div>
+        <div class="card cp"><div class="clabel">Прибыль</div><div class="cval" id="c-pro">0 ₽</div><div class="csub" id="c-pro-sub">маржа —</div></div>
+        <div class="card cb"><div class="clabel">Баланс</div><div class="cval" id="c-bal">0 ₽</div><div class="csub" id="c-bal-sub">—</div></div>
+      </div>
 
-    <div id="v-add">
-      <div class="form-card">
-        <div class="ftitle">Новая запись</div>
-        <div class="type-row">
-          <button class="type-btn ai" id="btn-inc" onclick="setType('inc')">▲ Доход</button>
-          <button class="type-btn" id="btn-exp" onclick="setType('exp')">▼ Расход</button>
-        </div>
-        <div class="fl-label">Категория</div>
-        <div class="cats" id="cats-row"></div>
-        <div class="row2">
-          <div>
-            <div class="fl-label">Сумма (₽)</div>
-            <input class="inp" type="number" id="f-amt" placeholder="0" min="0">
+      <div class="tabs">
+        <button class="tab on" onclick="showTab('add')">＋ Добавить</button>
+        <button class="tab" onclick="showTab('charts')">📊 Графики</button>
+        <button class="tab" onclick="showTab('history')">📋 История</button>
+      </div>
+
+      <div id="v-add">
+        <div class="form-card">
+          <div class="ftitle">Новая запись</div>
+          <div class="type-row">
+            <button class="type-btn ai" id="btn-inc" onclick="setType('inc')">▲ Доход</button>
+            <button class="type-btn" id="btn-exp" onclick="setType('exp')">▼ Расход</button>
           </div>
-          <div>
-            <div class="fl-label">Дата</div>
-            <input class="inp" type="date" id="f-date">
+          <div class="fl-label">Категория</div>
+          <div class="cats" id="cats-row"></div>
+          <div class="row2">
+            <div><div class="fl-label">Сумма (₽)</div><input class="inp" type="number" id="f-amt" placeholder="0" min="0"></div>
+            <div><div class="fl-label">Дата</div><input class="inp" type="date" id="f-date"></div>
+          </div>
+          <div class="field"><div class="fl-label">Заметка</div><input class="inp" type="text" id="f-note" placeholder="Например: кроссовки Nike, обед..."></div>
+          <div class="field">
+            <div class="fl-label">Площадка / источник</div>
+            <select class="inp" id="f-src">
+              <option>Плеерка</option><option>Фан Пей</option><option>Наличные</option><option>Карта</option><option>Другое</option>
+            </select>
+          </div>
+          <button class="submit" id="submit-btn" onclick="addEntry()">Добавить запись</button>
+        </div>
+      </div>
+
+      <div id="v-charts" style="display:none">
+        <div class="chart-section">
+          <div class="chart-header">Доходы и расходы по дням</div>
+          <div class="chart-wrap"><div class="cw-inner"><canvas id="ch-days" role="img" aria-label="Доходы и расходы по дням">Нет данных.</canvas></div></div>
+          <div class="legend">
+            <span class="leg-item"><span class="leg-dot" style="background:#22c55e"></span>Доходы</span>
+            <span class="leg-item"><span class="leg-dot" style="background:#ef4444"></span>Расходы</span>
           </div>
         </div>
-        <div class="field">
-          <div class="fl-label">Заметка</div>
-          <input class="inp" type="text" id="f-note" placeholder="Например: кроссовки Nike, обед...">
+        <div class="chart-section">
+          <div class="chart-header">Расходы по категориям</div>
+          <div class="chart-wrap"><div id="cat-bars" class="cat-bars"></div></div>
         </div>
-        <div class="field">
-          <div class="fl-label">Площадка / источник</div>
-          <select class="inp" id="f-src">
-            <option>Плеерка</option>
-            <option>Фан Пей</option>
-            <option>Наличные</option>
-            <option>Карта</option>
-            <option>Другое</option>
-          </select>
+        <div class="chart-section">
+          <div class="chart-header">По источнику дохода</div>
+          <div class="chart-wrap"><div class="cw-inner" style="height:180px"><canvas id="ch-src" role="img" aria-label="Доходы по источнику">Нет данных.</canvas></div></div>
         </div>
-        <button class="submit" id="submit-btn" onclick="addEntry()">Добавить запись</button>
       </div>
-    </div>
 
-    <div id="v-charts" style="display:none">
-      <div class="chart-section">
-        <div class="chart-header">Доходы и расходы по дням</div>
-        <div class="chart-wrap"><div class="cw-inner"><canvas id="ch-days" role="img" aria-label="Доходы и расходы по дням">Нет данных.</canvas></div></div>
-        <div class="legend">
-          <span class="leg-item"><span class="leg-dot" style="background:#22c55e"></span>Доходы</span>
-          <span class="leg-item"><span class="leg-dot" style="background:#ef4444"></span>Расходы</span>
-        </div>
+      <div id="v-history" style="display:none">
+        <div id="hist-out"></div>
       </div>
-      <div class="chart-section">
-        <div class="chart-header">Расходы по категориям</div>
-        <div class="chart-wrap"><div id="cat-bars" class="cat-bars"></div></div>
-      </div>
-      <div class="chart-section">
-        <div class="chart-header">По источнику дохода</div>
-        <div class="chart-wrap"><div class="cw-inner" style="height:180px"><canvas id="ch-src" role="img" aria-label="Доходы по источнику">Нет данных.</canvas></div></div>
-      </div>
-    </div>
-
-    <div id="v-history" style="display:none">
-      <div id="hist-out"></div>
     </div>
   </div>
+</div>
 
+<!-- SETTINGS -->
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettingsOutside(event)">
+  <div class="settings-panel">
+    <div class="settings-handle"></div>
+    <div class="settings-title">⚙️ Настройки</div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Тема</div>
+      <div class="theme-btns">
+        <button class="theme-btn on" id="th-dark" onclick="setTheme('dark')">🌑 Тёмная</button>
+        <button class="theme-btn" id="th-light" onclick="setTheme('light')">☀️ Светлая</button>
+        <button class="theme-btn" id="th-purple" onclick="setTheme('purple')">💜 Фиолетовая</button>
+        <button class="theme-btn" id="th-ocean" onclick="setTheme('ocean')">🌊 Океан</button>
+        <button class="theme-btn" id="th-forest" onclick="setTheme('forest')">🌿 Лес</button>
+        <button class="theme-btn" id="th-custom" onclick="setTheme('custom')">🎨 Своя</button>
+      </div>
+    </div>
+
+    <div class="settings-section" id="custom-colors" style="display:none">
+      <div class="settings-section-title">Кастомные цвета</div>
+      <div class="color-grid">
+        <div class="color-row"><span class="color-label">Фон</span><input type="color" class="color-input" id="cc-bg" value="#0b0d14" oninput="applyCustom()"></div>
+        <div class="color-row"><span class="color-label">Поверхность</span><input type="color" class="color-input" id="cc-surface" value="#111520" oninput="applyCustom()"></div>
+        <div class="color-row"><span class="color-label">Текст</span><input type="color" class="color-input" id="cc-text" value="#e2e4ef" oninput="applyCustom()"></div>
+        <div class="color-row"><span class="color-label">Акцент</span><input type="color" class="color-input" id="cc-accent" value="#4f46e5" oninput="applyCustom()"></div>
+        <div class="color-row"><span class="color-label">Доход</span><input type="color" class="color-input" id="cc-green" value="#22c55e" oninput="applyCustom()"></div>
+        <div class="color-row"><span class="color-label">Расход</span><input type="color" class="color-input" id="cc-red" value="#ef4444" oninput="applyCustom()"></div>
+      </div>
+    </div>
+
+    <button class="close-settings" onclick="closeSettings()">Закрыть</button>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbzX53guy6XtzPI8QLXjK7Alb0vSlAcnKru0ZODk2IN3sU6-S4b-YzUweOOdz2gHwnGx/exec';
-
+const PIN = '0707';
 const CATS = [
   {id:'продажи',label:'Продажи',color:'#818cf8'},
   {id:'еда',label:'Еда',color:'#fb923c'},
@@ -220,273 +350,265 @@ const CATS = [
   {id:'прочее',label:'Прочее',color:'#6b7280'},
 ];
 
-let entries = [];
-let curType = 'inc';
-let curCat = 'продажи';
-let dChart = null, sChart = null;
+let entries = [], curType='inc', curCat='продажи', dChart=null, sChart=null;
+let pinInput = '';
 
-// init cats
+// PIN
+function pinPress(d) {
+  if (pinInput.length >= 4) return;
+  pinInput += d;
+  updateDots();
+  if (pinInput.length === 4) {
+    setTimeout(() => checkPin(), 100);
+  }
+}
+function pinClear(all) {
+  if (all) pinInput = '';
+  else pinInput = pinInput.slice(0, -1);
+  updateDots();
+  document.getElementById('pin-error').textContent = '';
+}
+function updateDots() {
+  for (let i=0; i<4; i++) {
+    document.getElementById('d'+i).classList.toggle('filled', i < pinInput.length);
+  }
+}
+function checkPin() {
+  if (pinInput === PIN) {
+    document.getElementById('login-screen').style.display = 'none';
+    showGreeting();
+  } else {
+    document.getElementById('pin-error').textContent = 'Неверный пин-код';
+    pinInput = '';
+    updateDots();
+    const box = document.querySelector('.login-box');
+    box.style.animation = 'none';
+    setTimeout(() => { box.style.animation = 'shake .3s'; }, 10);
+  }
+}
+
+function showGreeting() {
+  const gs = document.getElementById('greeting-screen');
+  gs.style.display = 'flex';
+  const hour = new Date().getHours();
+  const greet = hour < 6 ? 'Доброй ночи' : hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер';
+  document.getElementById('greeting-text').textContent = greet + ', Руслан! 👋';
+  setTimeout(() => {
+    document.getElementById('greeting-text').classList.add('show');
+    document.getElementById('greeting-sub').classList.add('show');
+  }, 100);
+  setTimeout(() => {
+    gs.style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    loadData();
+  }, 2200);
+}
+
+// THEMES
+function setTheme(t) {
+  document.body.className = t === 'dark' ? '' : t;
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('th-'+t).classList.add('on');
+  document.getElementById('custom-colors').style.display = t==='custom' ? 'block' : 'none';
+  if (t==='custom') applyCustom();
+  try { localStorage.setItem('ft_theme', t); } catch(e) {}
+}
+function applyCustom() {
+  const r = document.documentElement;
+  const bg = document.getElementById('cc-bg').value;
+  const sf = document.getElementById('cc-surface').value;
+  const tx = document.getElementById('cc-text').value;
+  const ac = document.getElementById('cc-accent').value;
+  const gr = document.getElementById('cc-green').value;
+  const rd = document.getElementById('cc-red').value;
+  document.body.style.cssText = `--bg:${bg};--surface:${sf};--surface2:${sf}dd;--border:${sf}88;--text:${tx};--muted:${tx}88;--accent:${ac};--green:${gr};--red:${rd};--purple:#818cf8;--yellow:#facc15;--blue:#60a5fa;--orange:#fb923c`;
+}
+function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
+function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
+function closeSettingsOutside(e) { if(e.target===document.getElementById('settings-overlay')) closeSettings(); }
+
+// CATS
 const catsRow = document.getElementById('cats-row');
 CATS.forEach(c => {
   const b = document.createElement('button');
-  b.className = 'ccat' + (c.id===curCat?' on':'');
+  b.className = 'ccat'+(c.id===curCat?' on':'');
   b.dataset.c = c.id;
   b.textContent = c.label;
-  b.onclick = () => {
-    curCat = c.id;
-    document.querySelectorAll('.ccat').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on');
-  };
+  b.onclick = () => { curCat=c.id; document.querySelectorAll('.ccat').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
   catsRow.appendChild(b);
 });
-
 document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 
+// SYNC
 function setSyncStatus(s) {
   const dot = document.getElementById('sync-dot');
   const lbl = document.getElementById('sync-label');
-  const states = {
-    loading: ['','загрузка...'],
-    ok: ['ok','синхронизировано'],
-    saving: ['saving','сохраняем...'],
-    err: ['err','ошибка — нажми для повтора']
-  };
-  const [cls, txt] = states[s] || states.err;
-  dot.className = 'sync-dot' + (cls?' '+cls:'');
-  lbl.textContent = txt;
+  const m = {loading:['','загрузка...'],ok:['ok','синхронизировано'],saving:['saving','сохраняем...'],err:['err','ошибка']};
+  const [cls,txt] = m[s]||m.err;
+  dot.className='sync-dot'+(cls?' '+cls:'');
+  lbl.textContent=txt;
 }
 
 function loadData() {
-  document.getElementById('loading-screen').style.display = 'flex';
-  document.getElementById('error-screen').style.display = 'none';
-  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('loading-screen').style.display='flex';
+  document.getElementById('error-screen').style.display='none';
+  document.getElementById('main-content').style.display='none';
   setSyncStatus('loading');
-  const cbName = 'cb_' + Date.now();
-  const script = document.createElement('script');
-  let done = false;
-  const timer = setTimeout(() => {
-    if (done) return;
-    done = true;
-    delete window[cbName];
-    try { document.body.removeChild(script); } catch(e) {}
+  const cbName='cb_'+Date.now();
+  const script=document.createElement('script');
+  let done=false;
+  const timer=setTimeout(()=>{
+    if(done)return; done=true; delete window[cbName];
+    try{document.body.removeChild(script);}catch(e){}
     setSyncStatus('err');
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('error-screen').style.display = 'flex';
-  }, 10000);
-  window[cbName] = function(data) {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    delete window[cbName];
-    try { document.body.removeChild(script); } catch(e) {}
-    entries = (Array.isArray(data) ? data : []).map(row => ({
-      id: String(row.id),
-      type: row.type,
-      cat: row.cat,
-      amt: parseFloat(row.amt) || 0,
-      date: String(row.date || ''),
-      note: row.note || '',
-      src: row.src || ''
-    })).filter(e => e.id && e.type);
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('error-screen').style.display='flex';
+  },10000);
+  window[cbName]=function(data){
+    if(done)return; done=true; clearTimeout(timer); delete window[cbName];
+    try{document.body.removeChild(script);}catch(e){}
+    entries=(Array.isArray(data)?data:[]).map(row=>({
+      id:String(row.id),type:row.type,cat:row.cat,
+      amt:parseFloat(row.amt)||0,date:String(row.date||''),
+      note:row.note||'',src:row.src||''
+    })).filter(e=>e.id&&e.type);
     setSyncStatus('ok');
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('main-content').style.display='block';
     refresh();
   };
-  script.onerror = () => {
-    if (done) return;
-    done = true;
-    clearTimeout(timer);
-    delete window[cbName];
+  script.onerror=()=>{
+    if(done)return; done=true; clearTimeout(timer); delete window[cbName];
     setSyncStatus('err');
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('error-screen').style.display = 'flex';
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('error-screen').style.display='flex';
   };
-  script.src = API + '?callback=' + cbName + '&t=' + Date.now();
+  script.src=API+'?callback='+cbName+'&t='+Date.now();
   document.body.appendChild(script);
 }
 
 async function apiPost(payload) {
-  const data = {...payload, password: '13082009'};
-  let iframe = document.getElementById('hidden_iframe');
-  if (!iframe) {
-    iframe = document.createElement('iframe');
-    iframe.name = 'hidden_iframe';
-    iframe.id = 'hidden_iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-  }
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = API;
-  form.target = 'hidden_iframe';
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'payload';
-  input.value = JSON.stringify(data);
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-  await new Promise(r => setTimeout(r, 2000));
+  const data={...payload,password:'13082009'};
+  let iframe=document.getElementById('hidden_iframe');
+  if(!iframe){iframe=document.createElement('iframe');iframe.name='hidden_iframe';iframe.id='hidden_iframe';iframe.style.display='none';document.body.appendChild(iframe);}
+  const form=document.createElement('form');
+  form.method='POST';form.action=API;form.target='hidden_iframe';
+  const input=document.createElement('input');input.type='hidden';input.name='payload';input.value=JSON.stringify(data);
+  form.appendChild(input);document.body.appendChild(form);form.submit();document.body.removeChild(form);
+  await new Promise(r=>setTimeout(r,2000));
 }
 
-function setType(t) {
-  curType = t;
-  document.getElementById('btn-inc').className = 'type-btn'+(t==='inc'?' ai':'');
-  document.getElementById('btn-exp').className = 'type-btn'+(t==='exp'?' ae':'');
+function setType(t){
+  curType=t;
+  document.getElementById('btn-inc').className='type-btn'+(t==='inc'?' ai':'');
+  document.getElementById('btn-exp').className='type-btn'+(t==='exp'?' ae':'');
 }
 
-async function addEntry() {
-  const amt = parseFloat(document.getElementById('f-amt').value);
-  if (!amt || amt<=0) { document.getElementById('f-amt').focus(); return; }
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Сохраняем...';
+async function addEntry(){
+  const amt=parseFloat(document.getElementById('f-amt').value);
+  if(!amt||amt<=0){document.getElementById('f-amt').focus();return;}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.textContent='Сохраняем...';setSyncStatus('saving');
+  const entry={id:String(Date.now()),type:curType,cat:curCat,amt,date:document.getElementById('f-date').value,note:document.getElementById('f-note').value.trim(),src:document.getElementById('f-src').value};
+  await apiPost({action:'add',...entry});
+  entries.unshift(entry);setSyncStatus('ok');
+  document.getElementById('f-amt').value='';document.getElementById('f-note').value='';
+  btn.disabled=false;btn.textContent='Добавить запись';
+  refresh();
+}
+
+async function delEntry(id){
   setSyncStatus('saving');
-  const entry = {
-    id: String(Date.now()),
-    type: curType,
-    cat: curCat,
-    amt,
-    date: document.getElementById('f-date').value,
-    note: document.getElementById('f-note').value.trim(),
-    src: document.getElementById('f-src').value
-  };
-  try {
-    await apiPost({action:'add', ...entry});
-    entries.unshift(entry);
-    setSyncStatus('ok');
-    document.getElementById('f-amt').value='';
-    document.getElementById('f-note').value='';
-    refresh();
-    const activeTab = document.querySelector('.tab.on');
-    if (activeTab && activeTab.textContent.includes('История')) renderHistory();
-  } catch(e) {
-    setSyncStatus('err');
-    alert('Не удалось сохранить. Проверь интернет.');
-  }
-  btn.disabled = false;
-  btn.textContent = 'Добавить запись';
+  await apiPost({action:'delete',id});
+  entries=entries.filter(e=>e.id!==String(id));
+  setSyncStatus('ok');refresh();renderHistory();
 }
 
-async function delEntry(id) {
-  setSyncStatus('saving');
-  try {
-    await apiPost({action:'delete', id});
-    entries = entries.filter(e=>e.id!==String(id));
-    setSyncStatus('ok');
-    refresh();
-    renderHistory();
-  } catch(e) {
-    setSyncStatus('err');
-    alert('Не удалось удалить. Проверь интернет.');
-  }
+const fmt=n=>Math.round(n).toLocaleString('ru');
+
+function refresh(){
+  const inc=entries.filter(e=>e.type==='inc').reduce((s,e)=>s+e.amt,0);
+  const exp=entries.filter(e=>e.type==='exp').reduce((s,e)=>s+e.amt,0);
+  const pro=inc-exp;const mar=inc>0?Math.round(pro/inc*100):null;
+  document.getElementById('c-inc').textContent='+'+fmt(inc)+' ₽';
+  document.getElementById('c-exp').textContent='-'+fmt(exp)+' ₽';
+  document.getElementById('c-pro').textContent=(pro>=0?'+':'')+fmt(pro)+' ₽';
+  document.getElementById('c-pro-sub').textContent=mar!==null?'маржа '+mar+'%':'маржа —';
+  document.getElementById('c-bal').textContent=fmt(pro)+' ₽';
+  const ni=entries.filter(e=>e.type==='inc').length,ne=entries.filter(e=>e.type==='exp').length;
+  document.getElementById('c-inc-sub').textContent=ni?ni+' записей':'—';
+  document.getElementById('c-exp-sub').textContent=ne?ne+' записей':'—';
+  document.getElementById('c-bal-sub').textContent=pro>=0?'в плюсе':'в минусе';
 }
 
-const fmt = n => Math.round(n).toLocaleString('ru');
-
-function refresh() {
-  const inc = entries.filter(e=>e.type==='inc').reduce((s,e)=>s+e.amt,0);
-  const exp = entries.filter(e=>e.type==='exp').reduce((s,e)=>s+e.amt,0);
-  const pro = inc-exp;
-  const mar = inc>0 ? Math.round(pro/inc*100) : null;
-  document.getElementById('c-inc').textContent = '+'+fmt(inc)+' ₽';
-  document.getElementById('c-exp').textContent = '-'+fmt(exp)+' ₽';
-  document.getElementById('c-pro').textContent = (pro>=0?'+':'')+fmt(pro)+' ₽';
-  document.getElementById('c-pro-sub').textContent = mar!==null?'маржа '+mar+'%':'маржа —';
-  document.getElementById('c-bal').textContent = fmt(pro)+' ₽';
-  const ni = entries.filter(e=>e.type==='inc').length;
-  const ne = entries.filter(e=>e.type==='exp').length;
-  document.getElementById('c-inc-sub').textContent = ni?ni+' записей':'—';
-  document.getElementById('c-exp-sub').textContent = ne?ne+' записей':'—';
-  document.getElementById('c-bal-sub').textContent = pro>=0?'в плюсе':'в минусе';
-}
-
-function showTab(t) {
-  ['add','charts','history'].forEach(v => {
-    document.getElementById('v-'+v).style.display = v===t?'block':'none';
-  });
+function showTab(t){
+  ['add','charts','history'].forEach(v=>{document.getElementById('v-'+v).style.display=v===t?'block':'none';});
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['add','charts','history'][i]===t));
-  if(t==='charts') renderCharts();
-  if(t==='history') renderHistory();
+  if(t==='charts')renderCharts();
+  if(t==='history')renderHistory();
 }
 
-function renderHistory() {
-  const el = document.getElementById('hist-out');
-  if (!entries.length) { el.innerHTML='<div class="empty-msg">Записей пока нет</div>'; return; }
-  const byDate = {};
-  entries.forEach(e => { if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
-  const dates = Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
-  const cc = id => (CATS.find(c=>c.id===id)||{color:'#6b7280'}).color;
-  el.innerHTML = dates.map(d => {
-    const label = new Date(d+'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
-    const items = byDate[d].map(e=>`
+function renderHistory(){
+  const el=document.getElementById('hist-out');
+  if(!entries.length){el.innerHTML='<div class="empty-msg">Записей пока нет</div>';return;}
+  const byDate={};
+  entries.forEach(e=>{if(!byDate[e.date])byDate[e.date]=[];byDate[e.date].push(e);});
+  const dates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
+  const cc=id=>(CATS.find(c=>c.id===id)||{color:'#6b7280'}).color;
+  el.innerHTML=dates.map(d=>{
+    const label=new Date(d+'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
+    const items=byDate[d].map(e=>`
       <div class="h-item">
-        <div class="h-left">
-          <span class="h-dot" style="background:${cc(e.cat)}"></span>
-          <div>
-            <div class="h-cat">${e.cat}${e.note?' — '+e.note:''}</div>
-            <div class="h-note">${e.src}</div>
-          </div>
+        <div class="h-left"><span class="h-dot" style="background:${cc(e.cat)}"></span>
+          <div><div class="h-cat">${e.cat}${e.note?' — '+e.note:''}</div><div class="h-note">${e.src}</div></div>
         </div>
         <div class="h-right">
           <span class="h-amt ${e.type}">${e.type==='inc'?'+':'-'}${fmt(e.amt)} ₽</span>
-          <button class="h-del" onclick="delEntry(${e.id})" aria-label="Удалить">×</button>
+          <button class="h-del" onclick="delEntry(${e.id})">×</button>
         </div>
       </div>`).join('');
     return `<div class="h-date-group"><div class="h-date-label">${label}</div>${items}</div>`;
   }).join('');
 }
 
-function renderCharts() {
-  const byDate = {};
-  entries.forEach(e => {
-    if(!byDate[e.date]) byDate[e.date]={inc:0,exp:0};
-    byDate[e.date][e.type]+=e.amt;
-  });
-  const dates = Object.keys(byDate).sort();
-
-  if(dChart) dChart.destroy();
-  dChart = new Chart(document.getElementById('ch-days').getContext('2d'), {
+function renderCharts(){
+  const byDate={};
+  entries.forEach(e=>{if(!byDate[e.date])byDate[e.date]={inc:0,exp:0};byDate[e.date][e.type]+=e.amt;});
+  const dates=Object.keys(byDate).sort();
+  if(dChart)dChart.destroy();
+  dChart=new Chart(document.getElementById('ch-days').getContext('2d'),{
     type:'bar',
-    data:{
-      labels:dates.length?dates:['—'],
-      datasets:[
-        {label:'Доход',data:dates.map(d=>byDate[d].inc),backgroundColor:'#166534',borderColor:'#22c55e',borderWidth:1,borderRadius:4},
-        {label:'Расход',data:dates.map(d=>byDate[d].exp),backgroundColor:'#7f1d1d',borderColor:'#ef4444',borderWidth:1,borderRadius:4}
-      ]
-    },
+    data:{labels:dates.length?dates:['—'],datasets:[
+      {label:'Доход',data:dates.map(d=>byDate[d].inc),backgroundColor:'#166534',borderColor:'#22c55e',borderWidth:1,borderRadius:4},
+      {label:'Расход',data:dates.map(d=>byDate[d].exp),backgroundColor:'#7f1d1d',borderColor:'#ef4444',borderWidth:1,borderRadius:4}
+    ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}},y:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}}}}
   });
-
-  const catTotals = {};
-  CATS.forEach(c=>catTotals[c.id]=0);
+  const catTotals={};CATS.forEach(c=>catTotals[c.id]=0);
   entries.filter(e=>e.type==='exp').forEach(e=>{if(catTotals[e.cat]!==undefined)catTotals[e.cat]+=e.amt;});
-  const maxVal = Math.max(...Object.values(catTotals),1);
-  document.getElementById('cat-bars').innerHTML = CATS.map(c=>`
-    <div class="cbr">
-      <span class="cbr-label">${c.label}</span>
-      <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round(catTotals[c.id]/maxVal*100)}%;background:${c.color}"></div></div>
-      <span class="cbr-val">${fmt(catTotals[c.id])} ₽</span>
-    </div>`).join('');
-
-  const srcs = ['Плеерка','Фан Пей','Наличные','Карта','Другое'];
-  const srcColors = ['#818cf8','#60a5fa','#22c55e','#fb923c','#6b7280'];
-  const srcVals = srcs.map(s=>entries.filter(e=>e.type==='inc'&&e.src===s).reduce((sum,e)=>sum+e.amt,0));
-  const totalSrc = srcVals.reduce((a,b)=>a+b,0);
-
-  if(sChart) sChart.destroy();
-  sChart = new Chart(document.getElementById('ch-src').getContext('2d'), {
+  const maxVal=Math.max(...Object.values(catTotals),1);
+  document.getElementById('cat-bars').innerHTML=CATS.map(c=>`
+    <div class="cbr"><span class="cbr-label">${c.label}</span>
+    <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round(catTotals[c.id]/maxVal*100)}%;background:${c.color}"></div></div>
+    <span class="cbr-val">${fmt(catTotals[c.id])} ₽</span></div>`).join('');
+  const srcs=['Плеерка','Фан Пей','Наличные','Карта','Другое'];
+  const srcColors=['#818cf8','#60a5fa','#22c55e','#fb923c','#6b7280'];
+  const srcVals=srcs.map(s=>entries.filter(e=>e.type==='inc'&&e.src===s).reduce((sum,e)=>sum+e.amt,0));
+  const totalSrc=srcVals.reduce((a,b)=>a+b,0);
+  if(sChart)sChart.destroy();
+  sChart=new Chart(document.getElementById('ch-src').getContext('2d'),{
     type:'doughnut',
     data:{labels:srcs,datasets:[{data:totalSrc?srcVals:[1,1,1,1,1],backgroundColor:srcColors,borderWidth:0,hoverOffset:4}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'right',labels:{color:'#5a6080',font:{size:12},boxWidth:10,padding:12}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'right',labels:{color:'#5a6080',font:{size:12},boxWidth:10,padding:12}}}}
   });
 }
 
-loadData();
+// Load saved theme
+try {
+  const t = localStorage.getItem('ft_theme');
+  if (t) setTheme(t);
+} catch(e) {}
 </script>
 </body>
 </html>
