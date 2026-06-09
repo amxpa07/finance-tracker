@@ -26,16 +26,23 @@ button,input,select{font-family:inherit}
 .pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:24px}
 .pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:all .2s}
 .pin-dot.filled{background:var(--accent)}
+.pin-dot.error{background:var(--red)}
 .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
 .pin-btn{padding:16px;border:0.5px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);font-size:20px;font-weight:500;cursor:pointer;transition:all .15s}
 .pin-btn:hover{background:var(--border)}
-.pin-btn:active{transform:scale(0.95)}
+.pin-btn:active{transform:scale(0.92);background:var(--accent);color:#fff}
 .pin-error{color:var(--red);font-size:13px;min-height:20px}
-.greeting-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg);flex-direction:column;gap:16px}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.shake{animation:shake .4s}
+
+/* GREETING */
+.greeting-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:var(--bg);flex-direction:column;gap:12px;padding:20px;text-align:center}
 .greeting-text{font-size:28px;font-weight:600;color:var(--text);opacity:0;transform:translateY(20px);transition:all .6s}
 .greeting-text.show{opacity:1;transform:translateY(0)}
-.greeting-sub{font-size:15px;color:var(--muted);opacity:0;transition:all .6s .2s}
+.greeting-sub{font-size:14px;color:var(--muted);opacity:0;transition:all .6s .3s;max-width:320px;line-height:1.6}
 .greeting-sub.show{opacity:1}
+.greeting-author{font-size:12px;color:var(--accent);opacity:0;transition:all .6s .5s;font-style:italic}
+.greeting-author.show{opacity:1}
 
 /* HEADER */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
@@ -75,21 +82,19 @@ button,input,select{font-family:inherit}
 .type-btn.ai{background:#0d2e1a;border-color:#166534;color:var(--green)}
 .type-btn.ae{background:#2a0f0f;border-color:#7f1d1d;color:var(--red)}
 .fl-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cats-wrap{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.cats{display:flex;flex-wrap:wrap;gap:6px;flex:1}
 .ccat{padding:5px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
 .ccat.on{border-color:currentColor}
-.ccat[data-c="продажи"].on{color:var(--purple);background:#1a1040}
-.ccat[data-c="еда"].on{color:var(--orange);background:#1f100a}
-.ccat[data-c="карманные"].on{color:var(--blue);background:#0a1628}
-.ccat[data-c="подписки"].on{color:var(--yellow);background:#1f1600}
-.ccat[data-c="транспорт"].on{color:#34d399;background:#041f14}
-.ccat[data-c="прочее"].on{color:var(--muted);background:var(--surface2);border-color:var(--muted)}
+.ccat.custom-cat.on{color:#f472b6;background:#2a0a1a;border-color:#f472b6}
+.add-cat-btn{width:28px;height:28px;border:0.5px dashed var(--border);border-radius:50%;background:none;color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.add-cat-btn:hover{border-color:var(--accent);color:var(--accent)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .inp{width:100%;background:var(--surface2);border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;transition:border .15s}
 .inp:focus{border-color:var(--accent)}
 select.inp{appearance:none;cursor:pointer}
 .field{margin-bottom:14px}
-.submit{width:100%;padding:11px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:2px}
+.submit{width:100%;padding:11px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;margin-top:2px}
 .submit:hover{opacity:.9}
 .submit:disabled{opacity:.4;cursor:not-allowed}
 
@@ -124,10 +129,12 @@ select.inp{appearance:none;cursor:pointer}
 .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
 /* SETTINGS PANEL */
-.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:opacity .3s}
 .settings-overlay.open{display:flex}
-.settings-panel{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:860px;max-height:80vh;overflow-y:auto}
-.settings-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.settings-panel{background:var(--surface);border-radius:20px 20px 0 0;padding:12px 20px 40px;width:100%;max-width:860px;max-height:82vh;overflow-y:auto;transform:translateY(100%);transition:transform .35s cubic-bezier(.32,.72,0,1);touch-action:none}
+.settings-overlay.open .settings-panel{transform:translateY(0)}
+.settings-overlay.closing .settings-panel{transform:translateY(100%)}
+.settings-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:8px auto 20px;cursor:grab}
 .settings-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:20px}
 .settings-section{margin-bottom:24px}
 .settings-section-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
@@ -139,6 +146,13 @@ select.inp{appearance:none;cursor:pointer}
 .color-label{font-size:12px;color:var(--muted);flex:1}
 .color-input{width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--surface2)}
 .close-settings{width:100%;padding:12px;background:var(--surface2);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;cursor:pointer;margin-top:8px}
+.custom-cats-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.custom-cat-item{display:flex;align-items:center;gap:4px;padding:4px 10px;border:0.5px solid var(--border);border-radius:20px;background:var(--surface2);font-size:12px;color:var(--text)}
+.del-cat{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1}
+.del-cat:hover{color:var(--red)}
+.add-cat-row{display:flex;gap:8px}
+.add-cat-row .inp{flex:1}
+.add-cat-btn-sm{padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap}
 
 /* LOADING */
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;color:var(--muted);font-size:13px}
@@ -149,33 +163,27 @@ select.inp{appearance:none;cursor:pointer}
 .error-msg{font-size:14px;color:var(--muted);max-width:300px;line-height:1.6}
 .retry-btn{padding:10px 24px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer}
 
-/* LIGHT THEME */
-body.light{
-  --bg:#f4f6fb;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e6f0;
-  --text:#1a1d2e;--muted:#8892b0;
-}
-/* PURPLE THEME */
-body.purple{
-  --bg:#0d0a1a;--surface:#130f26;--surface2:#1a1535;--border:#2a2050;
-  --text:#e8e0ff;--muted:#7060a0;--accent:#9f7aea;--accent2:#b794f4;
-}
-/* OCEAN THEME */
-body.ocean{
-  --bg:#050f1a;--surface:#0a1628;--surface2:#0f1f38;--border:#1a3050;
-  --text:#e0f0ff;--muted:#4a7090;--accent:#0ea5e9;--accent2:#38bdf8;
-}
-/* FOREST THEME */
-body.forest{
-  --bg:#060f0a;--surface:#0a1a0f;--surface2:#0f2418;--border:#1a3a22;
-  --text:#e0ffe8;--muted:#4a7050;--accent:#22c55e;--accent2:#4ade80;
-}
+/* THEMES */
+body.light{--bg:#f4f6fb;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e6f0;--text:#1a1d2e;--muted:#8892b0}
+body.purple{--bg:#0d0a1a;--surface:#130f26;--surface2:#1a1535;--border:#2a2050;--text:#e8e0ff;--muted:#7060a0;--accent:#9f7aea}
+body.ocean{--bg:#050f1a;--surface:#0a1628;--surface2:#0f1f38;--border:#1a3050;--text:#e0f0ff;--muted:#4a7090;--accent:#0ea5e9}
+body.forest{--bg:#060f0a;--surface:#0a1a0f;--surface2:#0f2418;--border:#1a3a22;--text:#e0ffe8;--muted:#4a7050;--accent:#22c55e}
+body.gold{--bg:#0a0800;--surface:#130f00;--surface2:#1a1500;--border:#3a2d00;--text:#fff8dc;--muted:#8a7040;--accent:#c8960c}
+
+/* GOLD animated borders */
+body.gold .card::after{background:linear-gradient(90deg,#c8960c,#ffd700,#b8860b,#ffd700,#c8960c);background-size:200%;animation:goldshine 3s linear infinite}
+body.gold .card{border-color:#3a2d00}
+body.gold .tabs{border-color:#3a2d00}
+body.gold .form-card{border-color:#3a2d00}
+body.gold .settings-panel{border-top:1px solid #c8960c}
+@keyframes goldshine{0%{background-position:0%}100%{background-position:200%}}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
+  <div class="login-box" id="login-box">
     <div class="login-emoji">💸</div>
     <div class="login-title">Finance Tracker</div>
     <div class="login-sub">Введи пин-код для входа</div>
@@ -206,7 +214,8 @@ body.forest{
 <!-- GREETING -->
 <div class="greeting-screen" id="greeting-screen">
   <div class="greeting-text" id="greeting-text"></div>
-  <div class="greeting-sub" id="greeting-sub">Твои финансы под контролем 💪</div>
+  <div class="greeting-sub" id="greeting-sub"></div>
+  <div class="greeting-author" id="greeting-author"></div>
 </div>
 
 <!-- MAIN APP -->
@@ -217,7 +226,7 @@ body.forest{
         <div class="logo-icon">💸</div>
         <div>
           <div class="logo-text">Finance Tracker</div>
-          <div class="logo-sub">Плеерка · Фан Пей · Личное</div>
+          <div class="logo-sub">Playerok · Funpay · Личное</div>
         </div>
       </div>
       <div class="header-right">
@@ -225,7 +234,7 @@ body.forest{
           <div class="sync-dot" id="sync-dot"></div>
           <span id="sync-label">загрузка...</span>
         </div>
-        <button class="icon-btn" onclick="openSettings()" title="Настройки">⚙️</button>
+        <button class="icon-btn" onclick="openSettings()">⚙️</button>
       </div>
     </div>
 
@@ -261,7 +270,10 @@ body.forest{
             <button class="type-btn" id="btn-exp" onclick="setType('exp')">▼ Расход</button>
           </div>
           <div class="fl-label">Категория</div>
-          <div class="cats" id="cats-row"></div>
+          <div class="cats-wrap">
+            <div class="cats" id="cats-row"></div>
+            <button class="add-cat-btn" onclick="openSettings('cats')" title="Добавить категорию">＋</button>
+          </div>
           <div class="row2">
             <div><div class="fl-label">Сумма (₽)</div><input class="inp" type="number" id="f-amt" placeholder="0" min="0"></div>
             <div><div class="fl-label">Дата</div><input class="inp" type="date" id="f-date"></div>
@@ -270,7 +282,7 @@ body.forest{
           <div class="field">
             <div class="fl-label">Площадка / источник</div>
             <select class="inp" id="f-src">
-              <option>Плеерка</option><option>Фан Пей</option><option>Наличные</option><option>Карта</option><option>Другое</option>
+              <option>Playerok</option><option>Funpay</option><option>Наличные</option><option>Карта</option><option>Другое</option>
             </select>
           </div>
           <button class="submit" id="submit-btn" onclick="addEntry()">Добавить запись</button>
@@ -305,8 +317,8 @@ body.forest{
 
 <!-- SETTINGS -->
 <div class="settings-overlay" id="settings-overlay" onclick="closeSettingsOutside(event)">
-  <div class="settings-panel">
-    <div class="settings-handle"></div>
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-handle" id="settings-handle"></div>
     <div class="settings-title">⚙️ Настройки</div>
 
     <div class="settings-section">
@@ -317,6 +329,7 @@ body.forest{
         <button class="theme-btn" id="th-purple" onclick="setTheme('purple')">💜 Фиолетовая</button>
         <button class="theme-btn" id="th-ocean" onclick="setTheme('ocean')">🌊 Океан</button>
         <button class="theme-btn" id="th-forest" onclick="setTheme('forest')">🌿 Лес</button>
+        <button class="theme-btn" id="th-gold" onclick="setTheme('gold')">✨ Золото</button>
         <button class="theme-btn" id="th-custom" onclick="setTheme('custom')">🎨 Своя</button>
       </div>
     </div>
@@ -333,6 +346,15 @@ body.forest{
       </div>
     </div>
 
+    <div class="settings-section" id="section-cats">
+      <div class="settings-section-title">Мои категории</div>
+      <div class="custom-cats-list" id="custom-cats-list"></div>
+      <div class="add-cat-row">
+        <input class="inp" type="text" id="new-cat-inp" placeholder="Название категории" maxlength="20">
+        <button class="add-cat-btn-sm" onclick="addCustomCat()">Добавить</button>
+      </div>
+    </div>
+
     <button class="close-settings" onclick="closeSettings()">Закрыть</button>
   </div>
 </div>
@@ -341,7 +363,20 @@ body.forest{
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbzX53guy6XtzPI8QLXjK7Alb0vSlAcnKru0ZODk2IN3sU6-S4b-YzUweOOdz2gHwnGx/exec';
 const PIN = '0707';
-const CATS = [
+const QUOTES = [
+  {text:'Познай самого себя.',author:'Сократ'},
+  {text:'Нет ничего постоянного, кроме перемен.',author:'Гераклит'},
+  {text:'Счастье — это когда твои слова, мысли и дела в гармонии.',author:'Марк Аврелий'},
+  {text:'Богатство не в обладании, а в умении пользоваться.',author:'Аристотель'},
+  {text:'Лучше зажечь одну свечу, чем проклинать темноту.',author:'Конфуций'},
+  {text:'Деньги — хороший слуга, но плохой хозяин.',author:'Фрэнсис Бэкон'},
+  {text:'Будь тем изменением, которое хочешь видеть в мире.',author:'Махатма Ганди'},
+  {text:'Цель без плана — просто мечта.',author:'Антуан де Сент-Экзюпери'},
+  {text:'Тот, кто не помнит прошлого, обречён переживать его снова.',author:'Джордж Сантаяна'},
+  {text:'Человек — мера всех вещей.',author:'Протагор'},
+];
+
+const BASE_CATS = [
   {id:'продажи',label:'Продажи',color:'#818cf8'},
   {id:'еда',label:'Еда',color:'#fb923c'},
   {id:'карманные',label:'Карманные',color:'#60a5fa'},
@@ -350,110 +385,183 @@ const CATS = [
   {id:'прочее',label:'Прочее',color:'#6b7280'},
 ];
 
-let entries = [], curType='inc', curCat='продажи', dChart=null, sChart=null;
-let pinInput = '';
+let entries=[], curType='inc', curCat='продажи', dChart=null, sChart=null;
+let pinInput='';
+let customCats=[];
+
+try { customCats = JSON.parse(localStorage.getItem('ft_custom_cats')||'[]'); } catch(e){}
+
+function allCats() {
+  return [...BASE_CATS, ...customCats.map(c=>({id:c,label:c,color:'#f472b6',custom:true}))];
+}
 
 // PIN
+function vibrate(pattern) { try { navigator.vibrate(pattern); } catch(e){} }
+
 function pinPress(d) {
   if (pinInput.length >= 4) return;
+  vibrate(10);
   pinInput += d;
   updateDots();
-  if (pinInput.length === 4) {
-    setTimeout(() => checkPin(), 100);
-  }
+  if (pinInput.length === 4) setTimeout(checkPin, 100);
 }
 function pinClear(all) {
+  vibrate(10);
   if (all) pinInput = '';
-  else pinInput = pinInput.slice(0, -1);
+  else pinInput = pinInput.slice(0,-1);
   updateDots();
-  document.getElementById('pin-error').textContent = '';
+  document.getElementById('pin-error').textContent='';
 }
 function updateDots() {
-  for (let i=0; i<4; i++) {
-    document.getElementById('d'+i).classList.toggle('filled', i < pinInput.length);
-  }
+  for(let i=0;i<4;i++) document.getElementById('d'+i).classList.toggle('filled', i<pinInput.length);
 }
 function checkPin() {
   if (pinInput === PIN) {
-    document.getElementById('login-screen').style.display = 'none';
+    vibrate([10,50,10]);
+    document.getElementById('login-screen').style.display='none';
     showGreeting();
   } else {
-    document.getElementById('pin-error').textContent = 'Неверный пин-код';
-    pinInput = '';
-    updateDots();
-    const box = document.querySelector('.login-box');
-    box.style.animation = 'none';
-    setTimeout(() => { box.style.animation = 'shake .3s'; }, 10);
+    vibrate([50,30,50,30,100]);
+    document.getElementById('pin-error').textContent='Неверный пин-код';
+    for(let i=0;i<4;i++){
+      const d=document.getElementById('d'+i);
+      d.classList.add('error'); d.classList.remove('filled');
+    }
+    const box=document.getElementById('login-box');
+    box.classList.add('shake');
+    setTimeout(()=>{ box.classList.remove('shake'); for(let i=0;i<4;i++) document.getElementById('d'+i).classList.remove('error'); },500);
+    pinInput=''; updateDots();
   }
 }
 
 function showGreeting() {
-  const gs = document.getElementById('greeting-screen');
-  gs.style.display = 'flex';
-  const hour = new Date().getHours();
-  const greet = hour < 6 ? 'Доброй ночи' : hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер';
-  document.getElementById('greeting-text').textContent = greet + ', Руслан! 👋';
-  setTimeout(() => {
+  const gs=document.getElementById('greeting-screen');
+  gs.style.display='flex';
+  const h=new Date().getHours();
+  const gr=h<6?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('greeting-text').textContent=gr+', Руслан! 👋';
+  document.getElementById('greeting-sub').textContent='«'+q.text+'»';
+  document.getElementById('greeting-author').textContent='— '+q.author;
+  setTimeout(()=>{
     document.getElementById('greeting-text').classList.add('show');
     document.getElementById('greeting-sub').classList.add('show');
-  }, 100);
-  setTimeout(() => {
-    gs.style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('greeting-author').classList.add('show');
+  },100);
+  setTimeout(()=>{
+    gs.style.display='none';
+    document.getElementById('main-app').style.display='block';
     loadData();
-  }, 2200);
+  },2800);
 }
 
 // THEMES
 function setTheme(t) {
   document.documentElement.removeAttribute('style');
-  document.body.className = t === 'dark' ? '' : t;
-  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('on'));
-  document.getElementById('th-'+t).classList.add('on');
-  document.getElementById('custom-colors').style.display = t==='custom' ? 'block' : 'none';
-  if (t==='custom') applyCustom();
-  try { localStorage.setItem('ft_theme', t); } catch(e) {}
+  document.body.className = t==='dark'?'':t;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('on'));
+  const btn=document.getElementById('th-'+t);
+  if(btn) btn.classList.add('on');
+  document.getElementById('custom-colors').style.display=t==='custom'?'block':'none';
+  if(t==='custom') applyCustom();
+  try{ localStorage.setItem('ft_theme',t); }catch(e){}
 }
 function applyCustom() {
-  const bg = document.getElementById('cc-bg').value;
-  const sf = document.getElementById('cc-surface').value;
-  const tx = document.getElementById('cc-text').value;
-  const ac = document.getElementById('cc-accent').value;
-  const gr = document.getElementById('cc-green').value;
-  const rd = document.getElementById('cc-red').value;
-  const root = document.documentElement;
-  root.style.setProperty('--bg', bg);
-  root.style.setProperty('--surface', sf);
-  root.style.setProperty('--surface2', sf + 'cc');
-  root.style.setProperty('--border', sf + '66');
-  root.style.setProperty('--text', tx);
-  root.style.setProperty('--muted', tx + '99');
-  root.style.setProperty('--accent', ac);
-  root.style.setProperty('--green', gr);
-  root.style.setProperty('--red', rd);
+  const bg=document.getElementById('cc-bg').value;
+  const sf=document.getElementById('cc-surface').value;
+  const tx=document.getElementById('cc-text').value;
+  const ac=document.getElementById('cc-accent').value;
+  const gr=document.getElementById('cc-green').value;
+  const rd=document.getElementById('cc-red').value;
+  const root=document.documentElement;
+  root.style.setProperty('--bg',bg);
+  root.style.setProperty('--surface',sf);
+  root.style.setProperty('--surface2',sf+'cc');
+  root.style.setProperty('--border',sf+'66');
+  root.style.setProperty('--text',tx);
+  root.style.setProperty('--muted',tx+'99');
+  root.style.setProperty('--accent',ac);
+  root.style.setProperty('--green',gr);
+  root.style.setProperty('--red',rd);
 }
-function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
-function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
+
+// SETTINGS SWIPE TO CLOSE
+function openSettings(section) {
+  document.getElementById('settings-overlay').classList.add('open');
+  if(section==='cats') setTimeout(()=>{ document.getElementById('section-cats').scrollIntoView({behavior:'smooth'}); },400);
+  renderCustomCatsList();
+}
+function closeSettings() {
+  const overlay=document.getElementById('settings-overlay');
+  overlay.classList.add('closing');
+  setTimeout(()=>{ overlay.classList.remove('open','closing'); },350);
+}
 function closeSettingsOutside(e) { if(e.target===document.getElementById('settings-overlay')) closeSettings(); }
 
-// CATS
-const catsRow = document.getElementById('cats-row');
-CATS.forEach(c => {
-  const b = document.createElement('button');
-  b.className = 'ccat'+(c.id===curCat?' on':'');
-  b.dataset.c = c.id;
-  b.textContent = c.label;
-  b.onclick = () => { curCat=c.id; document.querySelectorAll('.ccat').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
-  catsRow.appendChild(b);
-});
-document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+// Swipe down to close
+(function(){
+  let startY=0, startT=0, isDragging=false;
+  const handle=document.getElementById('settings-handle');
+  const panel=document.getElementById('settings-panel');
+  handle.addEventListener('touchstart',e=>{ startY=e.touches[0].clientY; startT=Date.now(); isDragging=true; panel.style.transition='none'; },{passive:true});
+  handle.addEventListener('touchmove',e=>{
+    if(!isDragging) return;
+    const dy=Math.max(0,e.touches[0].clientY-startY);
+    panel.style.transform=`translateY(${dy}px)`;
+  },{passive:true});
+  handle.addEventListener('touchend',e=>{
+    isDragging=false;
+    panel.style.transition='';
+    const dy=e.changedTouches[0].clientY-startY;
+    const dt=Date.now()-startT;
+    if(dy>80||(dy>40&&dt<250)) closeSettings();
+    else panel.style.transform='';
+  });
+})();
+
+// CUSTOM CATS
+function renderCustomCatsList() {
+  const el=document.getElementById('custom-cats-list');
+  if(!customCats.length){ el.innerHTML='<span style="font-size:12px;color:var(--muted)">Нет кастомных категорий</span>'; return; }
+  el.innerHTML=customCats.map(c=>`
+    <div class="custom-cat-item">${c}<button class="del-cat" onclick="delCustomCat('${c}')">×</button></div>`).join('');
+}
+function addCustomCat() {
+  const inp=document.getElementById('new-cat-inp');
+  const val=inp.value.trim();
+  if(!val||customCats.includes(val)) return;
+  customCats.push(val);
+  try{ localStorage.setItem('ft_custom_cats',JSON.stringify(customCats)); }catch(e){}
+  inp.value='';
+  renderCats();
+  renderCustomCatsList();
+}
+function delCustomCat(c) {
+  customCats=customCats.filter(x=>x!==c);
+  try{ localStorage.setItem('ft_custom_cats',JSON.stringify(customCats)); }catch(e){}
+  if(curCat===c) curCat='продажи';
+  renderCats();
+  renderCustomCatsList();
+}
+
+function renderCats() {
+  const row=document.getElementById('cats-row');
+  row.innerHTML='';
+  allCats().forEach(c=>{
+    const b=document.createElement('button');
+    b.className='ccat'+(c.custom?' custom-cat':'')+(c.id===curCat?' on':'');
+    b.dataset.c=c.id;
+    b.textContent=c.label;
+    b.onclick=()=>{ curCat=c.id; document.querySelectorAll('.ccat').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
+    row.appendChild(b);
+  });
+}
 
 // SYNC
 function setSyncStatus(s) {
-  const dot = document.getElementById('sync-dot');
-  const lbl = document.getElementById('sync-label');
-  const m = {loading:['','загрузка...'],ok:['ok','синхронизировано'],saving:['saving','сохраняем...'],err:['err','ошибка']};
-  const [cls,txt] = m[s]||m.err;
+  const dot=document.getElementById('sync-dot'),lbl=document.getElementById('sync-label');
+  const m={loading:['','загрузка...'],ok:['ok','синхронизировано'],saving:['saving','сохраняем...'],err:['err','ошибка']};
+  const [cls,txt]=m[s]||m.err;
   dot.className='sync-dot'+(cls?' '+cls:'');
   lbl.textContent=txt;
 }
@@ -551,21 +659,32 @@ function refresh(){
 }
 
 function showTab(t){
-  ['add','charts','history'].forEach(v=>{document.getElementById('v-'+v).style.display=v===t?'block':'none';});
+  ['add','charts','history'].forEach(v=>{ document.getElementById('v-'+v).style.display=v===t?'block':'none'; });
   document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['add','charts','history'][i]===t));
   if(t==='charts')renderCharts();
   if(t==='history')renderHistory();
+}
+
+function fmtDate(str) {
+  // str может быть ISO датой или просто YYYY-MM-DD
+  const d = new Date(str.length===10 ? str+'T12:00:00' : str);
+  if(isNaN(d)) return str;
+  return d.toLocaleDateString('ru',{day:'2-digit',month:'2-digit',year:'2-digit'});
 }
 
 function renderHistory(){
   const el=document.getElementById('hist-out');
   if(!entries.length){el.innerHTML='<div class="empty-msg">Записей пока нет</div>';return;}
   const byDate={};
-  entries.forEach(e=>{if(!byDate[e.date])byDate[e.date]=[];byDate[e.date].push(e);});
+  entries.forEach(e=>{
+    const key=e.date.length===10?e.date:e.date.split('T')[0];
+    if(!byDate[key])byDate[key]=[];
+    byDate[key].push(e);
+  });
   const dates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
-  const cc=id=>(CATS.find(c=>c.id===id)||{color:'#6b7280'}).color;
+  const cc=id=>(allCats().find(c=>c.id===id)||{color:'#6b7280'}).color;
   el.innerHTML=dates.map(d=>{
-    const label=new Date(d+'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
+    const label=new Date(d+'T12:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
     const items=byDate[d].map(e=>`
       <div class="h-item">
         <div class="h-left"><span class="h-dot" style="background:${cc(e.cat)}"></span>
@@ -582,26 +701,36 @@ function renderHistory(){
 
 function renderCharts(){
   const byDate={};
-  entries.forEach(e=>{if(!byDate[e.date])byDate[e.date]={inc:0,exp:0};byDate[e.date][e.type]+=e.amt;});
+  entries.forEach(e=>{
+    const key=e.date.length===10?e.date:e.date.split('T')[0];
+    if(!byDate[key])byDate[key]={inc:0,exp:0};
+    byDate[key][e.type]+=e.amt;
+  });
   const dates=Object.keys(byDate).sort();
+  // Format labels as DD.MM
+  const labels=dates.map(d=>{ const p=d.split('-'); return p[2]+'.'+p[1]; });
+
   if(dChart)dChart.destroy();
   dChart=new Chart(document.getElementById('ch-days').getContext('2d'),{
     type:'bar',
-    data:{labels:dates.length?dates:['—'],datasets:[
+    data:{labels:labels.length?labels:['—'],datasets:[
       {label:'Доход',data:dates.map(d=>byDate[d].inc),backgroundColor:'#166534',borderColor:'#22c55e',borderWidth:1,borderRadius:4},
       {label:'Расход',data:dates.map(d=>byDate[d].exp),backgroundColor:'#7f1d1d',borderColor:'#ef4444',borderWidth:1,borderRadius:4}
     ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}},y:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}}}}
   });
-  const catTotals={};CATS.forEach(c=>catTotals[c.id]=0);
+
+  const cats=allCats();
+  const catTotals={};cats.forEach(c=>catTotals[c.id]=0);
   entries.filter(e=>e.type==='exp').forEach(e=>{if(catTotals[e.cat]!==undefined)catTotals[e.cat]+=e.amt;});
   const maxVal=Math.max(...Object.values(catTotals),1);
-  document.getElementById('cat-bars').innerHTML=CATS.map(c=>`
+  document.getElementById('cat-bars').innerHTML=cats.map(c=>`
     <div class="cbr"><span class="cbr-label">${c.label}</span>
     <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round(catTotals[c.id]/maxVal*100)}%;background:${c.color}"></div></div>
-    <span class="cbr-val">${fmt(catTotals[c.id])} ₽</span></div>`).join('');
-  const srcs=['Плеерка','Фан Пей','Наличные','Карта','Другое'];
+    <span class="cbr-val">${fmt(catTotals[c.id]||0)} ₽</span></div>`).join('');
+
+  const srcs=['Playerok','Funpay','Наличные','Карта','Другое'];
   const srcColors=['#818cf8','#60a5fa','#22c55e','#fb923c','#6b7280'];
   const srcVals=srcs.map(s=>entries.filter(e=>e.type==='inc'&&e.src===s).reduce((sum,e)=>sum+e.amt,0));
   const totalSrc=srcVals.reduce((a,b)=>a+b,0);
@@ -613,11 +742,10 @@ function renderCharts(){
   });
 }
 
-// Load saved theme
-try {
-  const t = localStorage.getItem('ft_theme');
-  if (t) setTheme(t);
-} catch(e) {}
+// INIT
+document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+renderCats();
+try{ const t=localStorage.getItem('ft_theme'); if(t) setTheme(t); }catch(e){}
 </script>
 </body>
 </html>
