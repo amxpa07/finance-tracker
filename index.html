@@ -209,7 +209,7 @@ select.inp{appearance:none;cursor:pointer}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const API = 'https://script.google.com/macros/s/AKfycbw3qnzR9rS-jnpqFkcDO1g5GYe3kHJveFNqLqAACcbNvz3glQlvPH5t2gxLE_2t7uVJ/exec';
+const API = 'https://script.google.com/macros/s/AKfycbzX53guy6XtzPI8QLXjK7Alb0vSlAcnKru0ZODk2IN3sU6-S4b-YzUweOOdz2gHwnGx/exec';
 
 const CATS = [
   {id:'продажи',label:'Продажи',color:'#818cf8'},
@@ -256,21 +256,35 @@ function setSyncStatus(s) {
   lbl.textContent = txt;
 }
 
-async function loadData() {
+function loadData() {
   document.getElementById('loading-screen').style.display = 'flex';
   document.getElementById('error-screen').style.display = 'none';
   document.getElementById('main-content').style.display = 'none';
   setSyncStatus('loading');
-  try {
-    const r = await fetch(API + '?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const data = await r.json();
-    entries = data.map(row => ({
+  const cbName = 'cb_' + Date.now();
+  const script = document.createElement('script');
+  let done = false;
+  const timer = setTimeout(() => {
+    if (done) return;
+    done = true;
+    delete window[cbName];
+    try { document.body.removeChild(script); } catch(e) {}
+    setSyncStatus('err');
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('error-screen').style.display = 'flex';
+  }, 10000);
+  window[cbName] = function(data) {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    delete window[cbName];
+    try { document.body.removeChild(script); } catch(e) {}
+    entries = (Array.isArray(data) ? data : []).map(row => ({
       id: String(row.id),
       type: row.type,
       cat: row.cat,
       amt: parseFloat(row.amt) || 0,
-      date: row.date,
+      date: String(row.date || ''),
       note: row.note || '',
       src: row.src || ''
     })).filter(e => e.id && e.type);
@@ -278,20 +292,43 @@ async function loadData() {
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
     refresh();
-  } catch(e) {
+  };
+  script.onerror = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(timer);
+    delete window[cbName];
     setSyncStatus('err');
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('error-screen').style.display = 'flex';
-  }
+  };
+  script.src = API + '?callback=' + cbName + '&t=' + Date.now();
+  document.body.appendChild(script);
 }
 
 async function apiPost(payload) {
-  const r = await fetch(API, {
-    method: 'POST',
-    body: JSON.stringify({...payload, password: '13092009'})
-  });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
+  const data = {...payload, password: '13082009'};
+  let iframe = document.getElementById('hidden_iframe');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe';
+    iframe.id = 'hidden_iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+  }
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = API;
+  form.target = 'hidden_iframe';
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'payload';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+  await new Promise(r => setTimeout(r, 2000));
 }
 
 function setType(t) {
