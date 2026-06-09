@@ -406,6 +406,7 @@ function showGreeting() {
 
 // THEMES
 function setTheme(t) {
+  document.documentElement.removeAttribute('style');
   document.body.className = t === 'dark' ? '' : t;
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('on'));
   document.getElementById('th-'+t).classList.add('on');
@@ -414,14 +415,22 @@ function setTheme(t) {
   try { localStorage.setItem('ft_theme', t); } catch(e) {}
 }
 function applyCustom() {
-  const r = document.documentElement;
   const bg = document.getElementById('cc-bg').value;
   const sf = document.getElementById('cc-surface').value;
   const tx = document.getElementById('cc-text').value;
   const ac = document.getElementById('cc-accent').value;
   const gr = document.getElementById('cc-green').value;
   const rd = document.getElementById('cc-red').value;
-  document.body.style.cssText = `--bg:${bg};--surface:${sf};--surface2:${sf}dd;--border:${sf}88;--text:${tx};--muted:${tx}88;--accent:${ac};--green:${gr};--red:${rd};--purple:#818cf8;--yellow:#facc15;--blue:#60a5fa;--orange:#fb923c`;
+  const root = document.documentElement;
+  root.style.setProperty('--bg', bg);
+  root.style.setProperty('--surface', sf);
+  root.style.setProperty('--surface2', sf + 'cc');
+  root.style.setProperty('--border', sf + '66');
+  root.style.setProperty('--text', tx);
+  root.style.setProperty('--muted', tx + '99');
+  root.style.setProperty('--accent', ac);
+  root.style.setProperty('--green', gr);
+  root.style.setProperty('--red', rd);
 }
 function openSettings() { document.getElementById('settings-overlay').classList.add('open'); }
 function closeSettings() { document.getElementById('settings-overlay').classList.remove('open'); }
