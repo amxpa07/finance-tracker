@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0d14;--surface:#111520;--surface2:#171c2b;--border:#1e2438;
+  --text:#e2e4ef;--muted:#5a6080;
+  --green:#22c55e;--red:#ef4444;--purple:#818cf8;--yellow:#facc15;--blue:#60a5fa;--orange:#fb923c;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui;min-height:100vh}
+button,input,select{font-family:inherit}
+.app{max-width:860px;margin:0 auto;padding:24px 20px 60px}
+
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:#4f46e5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-size:17px;font-weight:600;color:#fff}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.sync-badge{background:var(--surface2);border:0.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.sync-dot.ok{background:var(--green)}.sync-dot.saving{background:var(--yellow)}.sync-dot.err{background:var(--red)}
+
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.card.ci::after{background:var(--green)}.card.ce::after{background:var(--red)}
+.card.cp::after{background:var(--purple)}.card.cb::after{background:var(--yellow)}
+.clabel{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.cval{font-size:20px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.card.ci .cval{color:var(--green)}.card.ce .cval{color:var(--red)}
+.card.cp .cval{color:var(--purple)}.card.cb .cval{color:var(--yellow)}
+.csub{font-size:11px;color:var(--muted);margin-top:4px}
+
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:4px}
+.tab{flex:1;padding:8px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:500;border-radius:7px;cursor:pointer;transition:all .15s}
+.tab.on{background:var(--surface2);color:var(--text);border:0.5px solid var(--border)}
+
+.form-card{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:20px}
+.ftitle{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:14px}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.type-btn{padding:10px;border:0.5px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.type-btn.ai{background:#0d2e1a;border-color:#166534;color:var(--green)}
+.type-btn.ae{background:#2a0f0f;border-color:#7f1d1d;color:var(--red)}
+.fl-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.ccat{padding:5px 12px;border:0.5px solid var(--border);border-radius:20px;background:var(--surface2);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
+.ccat.on{border-color:currentColor}
+.ccat[data-c="продажи"].on{color:var(--purple);background:#1a1040}
+.ccat[data-c="еда"].on{color:var(--orange);background:#1f100a}
+.ccat[data-c="карманные"].on{color:var(--blue);background:#0a1628}
+.ccat[data-c="подписки"].on{color:var(--yellow);background:#1f1600}
+.ccat[data-c="транспорт"].on{color:#34d399;background:#041f14}
+.ccat[data-c="прочее"].on{color:var(--muted);background:var(--surface2);border-color:var(--muted)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.inp{width:100%;background:var(--surface2);border:0.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;transition:border .15s}
+.inp:focus{border-color:#4f46e5}
+select.inp{appearance:none;cursor:pointer}
+.field{margin-bottom:14px}
+.submit{width:100%;padding:11px;background:#4f46e5;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:2px}
+.submit:hover{background:#4338ca}
+.submit:disabled{background:#2a2560;color:#666;cursor:not-allowed}
+
+.h-date-group{margin-top:16px}
+.h-date-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;padding-left:2px}
+.h-item{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.h-left{display:flex;align-items:center;gap:10px}
+.h-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.h-cat{font-size:13px;color:var(--text)}
+.h-note{font-size:11px;color:var(--muted)}
+.h-right{display:flex;align-items:center;gap:8px}
+.h-amt{font-size:14px;font-weight:600;font-family:'JetBrains Mono',monospace}
+.h-amt.inc{color:var(--green)}.h-amt.exp{color:var(--red)}
+.h-del{background:none;border:none;color:#2a2a3a;cursor:pointer;font-size:20px;padding:0;transition:color .15s;line-height:1}
+.h-del:hover{color:var(--red)}
+.empty-msg{text-align:center;color:var(--muted);padding:48px 0;font-size:13px}
+
+.chart-section{margin-bottom:24px}
+.chart-header{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:12px}
+.chart-wrap{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:16px}
+.cw-inner{position:relative;width:100%;height:200px}
+.cat-bars{display:flex;flex-direction:column;gap:10px}
+.cbr{display:flex;align-items:center;gap:10px}
+.cbr-label{font-size:12px;color:var(--text);width:80px;flex-shrink:0}
+.cbr-track{flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden}
+.cbr-fill{height:100%;border-radius:4px;transition:width .4s}
+.cbr-val{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--muted);width:70px;text-align:right;flex-shrink:0}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:12px;color:var(--muted)}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;color:var(--muted);font-size:13px}
+.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:#4f46e5;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px;text-align:center}
+.error-icon{font-size:40px}
+.error-msg{font-size:14px;color:var(--muted);max-width:300px;line-height:1.6}
+.retry-btn{padding:10px 24px;background:#4f46e5;border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">💸</div>
+      <div>
+        <div class="logo-text">Finance Tracker</div>
+        <div class="logo-sub">Плеерка · Фан Пей · Личное</div>
+      </div>
+    </div>
+    <div class="sync-badge" onclick="loadData()">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-label">загрузка...</span>
+    </div>
+  </div>
+
+  <div id="loading-screen" class="loading-screen">
+    <div class="spinner"></div>
+    <span>Подключаемся к базе данных...</span>
+  </div>
+
+  <div id="error-screen" class="error-screen" style="display:none">
+    <div class="error-icon">⚠️</div>
+    <div class="error-msg">Не удалось подключиться к базе данных. Проверь интернет или попробуй снова.</div>
+    <button class="retry-btn" onclick="loadData()">Попробовать снова</button>
+  </div>
+
+  <div id="main-content" style="display:none">
+    <div class="cards">
+      <div class="card ci"><div class="clabel">Доходы</div><div class="cval" id="c-inc">0 ₽</div><div class="csub" id="c-inc-sub">—</div></div>
+      <div class="card ce"><div class="clabel">Расходы</div><div class="cval" id="c-exp">0 ₽</div><div class="csub" id="c-exp-sub">—</div></div>
+      <div class="card cp"><div class="clabel">Прибыль</div><div class="cval" id="c-pro">0 ₽</div><div class="csub" id="c-pro-sub">маржа —</div></div>
+      <div class="card cb"><div class="clabel">Баланс</div><div class="cval" id="c-bal">0 ₽</div><div class="csub" id="c-bal-sub">—</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab on" onclick="showTab('add')">＋ Добавить</button>
+      <button class="tab" onclick="showTab('charts')">📊 Графики</button>
+      <button class="tab" onclick="showTab('history')">📋 История</button>
+    </div>
+
+    <div id="v-add">
+      <div class="form-card">
+        <div class="ftitle">Новая запись</div>
+        <div class="type-row">
+          <button class="type-btn ai" id="btn-inc" onclick="setType('inc')">▲ Доход</button>
+          <button class="type-btn" id="btn-exp" onclick="setType('exp')">▼ Расход</button>
+        </div>
+        <div class="fl-label">Категория</div>
+        <div class="cats" id="cats-row"></div>
+        <div class="row2">
+          <div>
+            <div class="fl-label">Сумма (₽)</div>
+            <input class="inp" type="number" id="f-amt" placeholder="0" min="0">
+          </div>
+          <div>
+            <div class="fl-label">Дата</div>
+            <input class="inp" type="date" id="f-date">
+          </div>
+        </div>
+        <div class="field">
+          <div class="fl-label">Заметка</div>
+          <input class="inp" type="text" id="f-note" placeholder="Например: кроссовки Nike, обед...">
+        </div>
+        <div class="field">
+          <div class="fl-label">Площадка / источник</div>
+          <select class="inp" id="f-src">
+            <option>Плеерка</option>
+            <option>Фан Пей</option>
+            <option>Наличные</option>
+            <option>Карта</option>
+            <option>Другое</option>
+          </select>
+        </div>
+        <button class="submit" id="submit-btn" onclick="addEntry()">Добавить запись</button>
+      </div>
+    </div>
+
+    <div id="v-charts" style="display:none">
+      <div class="chart-section">
+        <div class="chart-header">Доходы и расходы по дням</div>
+        <div class="chart-wrap"><div class="cw-inner"><canvas id="ch-days" role="img" aria-label="Доходы и расходы по дням">Нет данных.</canvas></div></div>
+        <div class="legend">
+          <span class="leg-item"><span class="leg-dot" style="background:#22c55e"></span>Доходы</span>
+          <span class="leg-item"><span class="leg-dot" style="background:#ef4444"></span>Расходы</span>
+        </div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-header">Расходы по категориям</div>
+        <div class="chart-wrap"><div id="cat-bars" class="cat-bars"></div></div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-header">По источнику дохода</div>
+        <div class="chart-wrap"><div class="cw-inner" style="height:180px"><canvas id="ch-src" role="img" aria-label="Доходы по источнику">Нет данных.</canvas></div></div>
+      </div>
+    </div>
+
+    <div id="v-history" style="display:none">
+      <div id="hist-out"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbw3qnzR9rS-jnpqFkcDO1g5GYe3kHJveFNqLqAACcbNvz3glQlvPH5t2gxLE_2t7uVJ/exec';
+
+const CATS = [
+  {id:'продажи',label:'Продажи',color:'#818cf8'},
+  {id:'еда',label:'Еда',color:'#fb923c'},
+  {id:'карманные',label:'Карманные',color:'#60a5fa'},
+  {id:'подписки',label:'Подписки',color:'#facc15'},
+  {id:'транспорт',label:'Транспорт',color:'#34d399'},
+  {id:'прочее',label:'Прочее',color:'#6b7280'},
+];
+
+let entries = [];
+let curType = 'inc';
+let curCat = 'продажи';
+let dChart = null, sChart = null;
+
+// init cats
+const catsRow = document.getElementById('cats-row');
+CATS.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'ccat' + (c.id===curCat?' on':'');
+  b.dataset.c = c.id;
+  b.textContent = c.label;
+  b.onclick = () => {
+    curCat = c.id;
+    document.querySelectorAll('.ccat').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+  };
+  catsRow.appendChild(b);
+});
+
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+function setSyncStatus(s) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  const states = {
+    loading: ['','загрузка...'],
+    ok: ['ok','синхронизировано'],
+    saving: ['saving','сохраняем...'],
+    err: ['err','ошибка — нажми для повтора']
+  };
+  const [cls, txt] = states[s] || states.err;
+  dot.className = 'sync-dot' + (cls?' '+cls:'');
+  lbl.textContent = txt;
+}
+
+async function loadData() {
+  document.getElementById('loading-screen').style.display = 'flex';
+  document.getElementById('error-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'none';
+  setSyncStatus('loading');
+  try {
+    const r = await fetch(API + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    entries = data.map(row => ({
+      id: String(row.id),
+      type: row.type,
+      cat: row.cat,
+      amt: parseFloat(row.amt) || 0,
+      date: row.date,
+      note: row.note || '',
+      src: row.src || ''
+    })).filter(e => e.id && e.type);
+    setSyncStatus('ok');
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    refresh();
+  } catch(e) {
+    setSyncStatus('err');
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('error-screen').style.display = 'flex';
+  }
+}
+
+async function apiPost(payload) {
+  const r = await fetch(API, {
+    method: 'POST',
+    body: JSON.stringify({...payload, password: '13092009'})
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function setType(t) {
+  curType = t;
+  document.getElementById('btn-inc').className = 'type-btn'+(t==='inc'?' ai':'');
+  document.getElementById('btn-exp').className = 'type-btn'+(t==='exp'?' ae':'');
+}
+
+async function addEntry() {
+  const amt = parseFloat(document.getElementById('f-amt').value);
+  if (!amt || amt<=0) { document.getElementById('f-amt').focus(); return; }
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Сохраняем...';
+  setSyncStatus('saving');
+  const entry = {
+    id: String(Date.now()),
+    type: curType,
+    cat: curCat,
+    amt,
+    date: document.getElementById('f-date').value,
+    note: document.getElementById('f-note').value.trim(),
+    src: document.getElementById('f-src').value
+  };
+  try {
+    await apiPost({action:'add', ...entry});
+    entries.unshift(entry);
+    setSyncStatus('ok');
+    document.getElementById('f-amt').value='';
+    document.getElementById('f-note').value='';
+    refresh();
+    const activeTab = document.querySelector('.tab.on');
+    if (activeTab && activeTab.textContent.includes('История')) renderHistory();
+  } catch(e) {
+    setSyncStatus('err');
+    alert('Не удалось сохранить. Проверь интернет.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Добавить запись';
+}
+
+async function delEntry(id) {
+  setSyncStatus('saving');
+  try {
+    await apiPost({action:'delete', id});
+    entries = entries.filter(e=>e.id!==String(id));
+    setSyncStatus('ok');
+    refresh();
+    renderHistory();
+  } catch(e) {
+    setSyncStatus('err');
+    alert('Не удалось удалить. Проверь интернет.');
+  }
+}
+
+const fmt = n => Math.round(n).toLocaleString('ru');
+
+function refresh() {
+  const inc = entries.filter(e=>e.type==='inc').reduce((s,e)=>s+e.amt,0);
+  const exp = entries.filter(e=>e.type==='exp').reduce((s,e)=>s+e.amt,0);
+  const pro = inc-exp;
+  const mar = inc>0 ? Math.round(pro/inc*100) : null;
+  document.getElementById('c-inc').textContent = '+'+fmt(inc)+' ₽';
+  document.getElementById('c-exp').textContent = '-'+fmt(exp)+' ₽';
+  document.getElementById('c-pro').textContent = (pro>=0?'+':'')+fmt(pro)+' ₽';
+  document.getElementById('c-pro-sub').textContent = mar!==null?'маржа '+mar+'%':'маржа —';
+  document.getElementById('c-bal').textContent = fmt(pro)+' ₽';
+  const ni = entries.filter(e=>e.type==='inc').length;
+  const ne = entries.filter(e=>e.type==='exp').length;
+  document.getElementById('c-inc-sub').textContent = ni?ni+' записей':'—';
+  document.getElementById('c-exp-sub').textContent = ne?ne+' записей':'—';
+  document.getElementById('c-bal-sub').textContent = pro>=0?'в плюсе':'в минусе';
+}
+
+function showTab(t) {
+  ['add','charts','history'].forEach(v => {
+    document.getElementById('v-'+v).style.display = v===t?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['add','charts','history'][i]===t));
+  if(t==='charts') renderCharts();
+  if(t==='history') renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('hist-out');
+  if (!entries.length) { el.innerHTML='<div class="empty-msg">Записей пока нет</div>'; return; }
+  const byDate = {};
+  entries.forEach(e => { if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
+  const dates = Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
+  const cc = id => (CATS.find(c=>c.id===id)||{color:'#6b7280'}).color;
+  el.innerHTML = dates.map(d => {
+    const label = new Date(d+'T00:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
+    const items = byDate[d].map(e=>`
+      <div class="h-item">
+        <div class="h-left">
+          <span class="h-dot" style="background:${cc(e.cat)}"></span>
+          <div>
+            <div class="h-cat">${e.cat}${e.note?' — '+e.note:''}</div>
+            <div class="h-note">${e.src}</div>
+          </div>
+        </div>
+        <div class="h-right">
+          <span class="h-amt ${e.type}">${e.type==='inc'?'+':'-'}${fmt(e.amt)} ₽</span>
+          <button class="h-del" onclick="delEntry(${e.id})" aria-label="Удалить">×</button>
+        </div>
+      </div>`).join('');
+    return `<div class="h-date-group"><div class="h-date-label">${label}</div>${items}</div>`;
+  }).join('');
+}
+
+function renderCharts() {
+  const byDate = {};
+  entries.forEach(e => {
+    if(!byDate[e.date]) byDate[e.date]={inc:0,exp:0};
+    byDate[e.date][e.type]+=e.amt;
+  });
+  const dates = Object.keys(byDate).sort();
+
+  if(dChart) dChart.destroy();
+  dChart = new Chart(document.getElementById('ch-days').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:dates.length?dates:['—'],
+      datasets:[
+        {label:'Доход',data:dates.map(d=>byDate[d].inc),backgroundColor:'#166534',borderColor:'#22c55e',borderWidth:1,borderRadius:4},
+        {label:'Расход',data:dates.map(d=>byDate[d].exp),backgroundColor:'#7f1d1d',borderColor:'#ef4444',borderWidth:1,borderRadius:4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}},y:{ticks:{color:'#5a6080',font:{size:11}},grid:{color:'#1a1f30'}}}}
+  });
+
+  const catTotals = {};
+  CATS.forEach(c=>catTotals[c.id]=0);
+  entries.filter(e=>e.type==='exp').forEach(e=>{if(catTotals[e.cat]!==undefined)catTotals[e.cat]+=e.amt;});
+  const maxVal = Math.max(...Object.values(catTotals),1);
+  document.getElementById('cat-bars').innerHTML = CATS.map(c=>`
+    <div class="cbr">
+      <span class="cbr-label">${c.label}</span>
+      <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round(catTotals[c.id]/maxVal*100)}%;background:${c.color}"></div></div>
+      <span class="cbr-val">${fmt(catTotals[c.id])} ₽</span>
+    </div>`).join('');
+
+  const srcs = ['Плеерка','Фан Пей','Наличные','Карта','Другое'];
+  const srcColors = ['#818cf8','#60a5fa','#22c55e','#fb923c','#6b7280'];
+  const srcVals = srcs.map(s=>entries.filter(e=>e.type==='inc'&&e.src===s).reduce((sum,e)=>sum+e.amt,0));
+  const totalSrc = srcVals.reduce((a,b)=>a+b,0);
+
+  if(sChart) sChart.destroy();
+  sChart = new Chart(document.getElementById('ch-src').getContext('2d'), {
+    type:'doughnut',
+    data:{labels:srcs,datasets:[{data:totalSrc?srcVals:[1,1,1,1,1],backgroundColor:srcColors,borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'right',labels:{color:'#5a6080',font:{size:12},boxWidth:10,padding:12}}}}
+  });
+}
+
+loadData();
+</script>
+</body>
+</html>
