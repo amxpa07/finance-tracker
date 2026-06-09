@@ -309,6 +309,19 @@ body.gold .settings-panel{border-top:1px solid #c8960c}
       </div>
 
       <div id="v-history" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+          <select class="inp" id="f-hist-type" style="flex:1;min-width:90px" onchange="renderHistory()">
+            <option value="">Все</option>
+            <option value="inc">Доходы</option>
+            <option value="exp">Расходы</option>
+          </select>
+          <select class="inp" id="f-hist-cat" style="flex:1;min-width:110px" onchange="renderHistory()">
+            <option value="">Все категории</option>
+          </select>
+          <input class="inp" type="date" id="f-hist-from" style="flex:1;min-width:100px" onchange="renderHistory()">
+          <input class="inp" type="date" id="f-hist-to" style="flex:1;min-width:100px" onchange="renderHistory()">
+          <button style="padding:9px 12px;background:var(--surface2);border:0.5px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-size:13px;white-space:nowrap" onclick="clearHistFilters()">Сброс</button>
+        </div>
         <div id="hist-out"></div>
       </div>
     </div>
@@ -374,7 +387,53 @@ const QUOTES = [
   {text:'Цель без плана — просто мечта.',author:'Антуан де Сент-Экзюпери'},
   {text:'Тот, кто не помнит прошлого, обречён переживать его снова.',author:'Джордж Сантаяна'},
   {text:'Человек — мера всех вещей.',author:'Протагор'},
+  {text:'Единственное истинное богатство — это время.',author:'Сенека'},
+  {text:'Не деньги делают человека богатым, а его душа.',author:'Демокрит'},
+  {text:'Кто владеет собой, тот владеет всем.',author:'Эпиктет'},
+  {text:'Потраченное время не вернёшь, береги каждый час.',author:'Теофраст'},
+  {text:'Мудрец не накапливает. Чем больше он делает для других, тем больше у него самого.',author:'Лао-цзы'},
+  {text:'Дорогу осилит идущий.',author:'Гиппократ'},
+  {text:'Не стыдно не знать — стыдно не учиться.',author:'Сократ'},
+  {text:'Счастье не в том, чтобы иметь много, а в том, чтобы мало нуждаться.',author:'Демокрит'},
+  {text:'Препятствие — это путь.',author:'Марк Аврелий'},
+  {text:'Сила не в теле, а в душе.',author:'Л.Н. Толстой'},
+  {text:'Труд избавляет нас от трёх великих зол: скуки, порока и нужды.',author:'Вольтер'},
+  {text:'Смелость — это не отсутствие страха, а победа над ним.',author:'Нельсон Мандела'},
+  {text:'Жизнь — это то, что случается, пока ты строишь планы.',author:'Джон Леннон'},
+  {text:'Завтра будет зависеть от того, что ты делаешь сегодня.',author:'Махатма Ганди'},
+  {text:'Не жди. Время никогда не будет подходящим.',author:'Наполеон Хилл'},
+  {text:'Успех — это сумма маленьких усилий, повторяемых день за днём.',author:'Роберт Кольер'},
+  {text:'Великие умы обсуждают идеи, средние — события, малые — людей.',author:'Элеонора Рузвельт'},
+  {text:'Лучшее время посадить дерево было двадцать лет назад. Следующее лучшее время — сегодня.',author:'Китайская пословица'},
+  {text:'Тот, кто двигается вперёд, никогда не устаёт.',author:'Леонардо да Винчи'},
+  {text:'Не ищи ошибки — ищи решения.',author:'Генри Форд'},
+  {text:'Знание — сила.',author:'Фрэнсис Бэкон'},
+  {text:'Инвестиции в знания приносят лучший процент.',author:'Бенджамин Франклин'},
+  {text:'Не откладывай на завтра то, что можно сделать сегодня.',author:'Бенджамин Франклин'},
+  {text:'Всё гениальное просто.',author:'Леонардо да Винчи'},
+  {text:'Мир — это книга. Кто не путешествовал, прочитал лишь одну страницу.',author:'Августин Блаженный'},
+  {text:'Сначала они тебя не замечают, потом смеются над тобой, затем борются с тобой. Потом ты побеждаешь.',author:'Махатма Ганди'},
+  {text:'Будущее принадлежит тем, кто верит в красоту своей мечты.',author:'Элеонора Рузвельт'},
+  {text:'Жизнь измеряется не количеством вдохов, а моментами, которые захватывают дух.',author:'Майя Энджелоу'},
+  {text:'Дисциплина — это мост между целями и достижениями.',author:'Джим Рон'},
+  {text:'Хочешь изменить мир — начни с себя.',author:'Конфуций'},
 ];
+
+// Shuffle чтобы не повторялись по порядку
+function shuffleQuotes(arr) {
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+let _quotesPool = shuffleQuotes(QUOTES);
+let _quoteIdx = 0;
+function getNextQuote() {
+  if(_quoteIdx >= _quotesPool.length) { _quotesPool = shuffleQuotes(QUOTES); _quoteIdx = 0; }
+  return _quotesPool[_quoteIdx++];
+}
 
 const BASE_CATS = [
   {id:'продажи',label:'Продажи',color:'#818cf8'},
@@ -439,7 +498,7 @@ function showGreeting() {
   gs.style.display='flex';
   const h=new Date().getHours();
   const gr=h<6?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
-  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  const q=getNextQuote();
   document.getElementById('greeting-text').textContent=gr+', Руслан! 👋';
   document.getElementById('greeting-sub').textContent='«'+q.text+'»';
   document.getElementById('greeting-author').textContent='— '+q.author;
@@ -672,11 +731,53 @@ function fmtDate(str) {
   return d.toLocaleDateString('ru',{day:'2-digit',month:'2-digit',year:'2-digit'});
 }
 
+function updateCatFilter(){
+  const sel=document.getElementById('f-hist-cat');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Все категории</option>';
+  allCats().forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c.id; o.textContent=c.label;
+    if(c.id===cur) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function clearHistFilters(){
+  document.getElementById('f-hist-type').value='';
+  document.getElementById('f-hist-cat').value='';
+  document.getElementById('f-hist-from').value='';
+  document.getElementById('f-hist-to').value='';
+  renderHistory();
+}
+
+function getTime(id){
+  // id is timestamp string
+  const n=parseInt(id);
+  if(isNaN(n)||n<1000000000000) return '';
+  const d=new Date(n);
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
 function renderHistory(){
+  updateCatFilter();
   const el=document.getElementById('hist-out');
-  if(!entries.length){el.innerHTML='<div class="empty-msg">Записей пока нет</div>';return;}
+  const fType=document.getElementById('f-hist-type')?.value||'';
+  const fCat=document.getElementById('f-hist-cat')?.value||'';
+  const fFrom=document.getElementById('f-hist-from')?.value||'';
+  const fTo=document.getElementById('f-hist-to')?.value||'';
+
+  let filtered=[...entries].sort((a,b)=>b.id.localeCompare(a.id));
+  if(fType) filtered=filtered.filter(e=>e.type===fType);
+  if(fCat) filtered=filtered.filter(e=>e.cat===fCat);
+  if(fFrom) filtered=filtered.filter(e=>{const k=e.date.length===10?e.date:e.date.split('T')[0];return k>=fFrom;});
+  if(fTo) filtered=filtered.filter(e=>{const k=e.date.length===10?e.date:e.date.split('T')[0];return k<=fTo;});
+
+  if(!filtered.length){el.innerHTML='<div class="empty-msg">'+(entries.length?'Ничего не найдено':'Записей пока нет')+'</div>';return;}
+
   const byDate={};
-  entries.forEach(e=>{
+  filtered.forEach(e=>{
     const key=e.date.length===10?e.date:e.date.split('T')[0];
     if(!byDate[key])byDate[key]=[];
     byDate[key].push(e);
@@ -685,16 +786,22 @@ function renderHistory(){
   const cc=id=>(allCats().find(c=>c.id===id)||{color:'#6b7280'}).color;
   el.innerHTML=dates.map(d=>{
     const label=new Date(d+'T12:00:00').toLocaleDateString('ru',{day:'numeric',month:'long'});
-    const items=byDate[d].map(e=>`
-      <div class="h-item">
+    const items=byDate[d]
+      .sort((a,b)=>b.id.localeCompare(a.id))
+      .map(e=>{
+        const t=getTime(e.id);
+        return `<div class="h-item">
         <div class="h-left"><span class="h-dot" style="background:${cc(e.cat)}"></span>
-          <div><div class="h-cat">${e.cat}${e.note?' — '+e.note:''}</div><div class="h-note">${e.src}</div></div>
+          <div>
+            <div class="h-cat">${e.cat}${e.note?' — '+e.note:''}</div>
+            <div class="h-note">${e.src}${t?' · '+t:''}</div>
+          </div>
         </div>
         <div class="h-right">
           <span class="h-amt ${e.type}">${e.type==='inc'?'+':'-'}${fmt(e.amt)} ₽</span>
           <button class="h-del" onclick="delEntry(${e.id})">×</button>
         </div>
-      </div>`).join('');
+      </div>`;}).join('');
     return `<div class="h-date-group"><div class="h-date-label">${label}</div>${items}</div>`;
   }).join('');
 }
@@ -722,12 +829,22 @@ function renderCharts(){
   });
 
   const cats=allCats();
-  const catTotals={};cats.forEach(c=>catTotals[c.id]=0);
-  entries.filter(e=>e.type==='exp').forEach(e=>{if(catTotals[e.cat]!==undefined)catTotals[e.cat]+=e.amt;});
+  const catTotals={};
+  // init all known cats
+  cats.forEach(c=>catTotals[c.id]=0);
+  // also add any unknown cats from entries
+  entries.filter(e=>e.type==='exp').forEach(e=>{
+    if(catTotals[e.cat]===undefined) catTotals[e.cat]=0;
+    catTotals[e.cat]+=e.amt;
+  });
+  // merge unknown into display list
+  const allCatIds=Object.keys(catTotals);
+  const displayCats=[...cats];
+  allCatIds.forEach(id=>{ if(!displayCats.find(c=>c.id===id)) displayCats.push({id,label:id,color:'#f472b6'}); });
   const maxVal=Math.max(...Object.values(catTotals),1);
-  document.getElementById('cat-bars').innerHTML=cats.map(c=>`
+  document.getElementById('cat-bars').innerHTML=displayCats.map(c=>`
     <div class="cbr"><span class="cbr-label">${c.label}</span>
-    <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round(catTotals[c.id]/maxVal*100)}%;background:${c.color}"></div></div>
+    <div class="cbr-track"><div class="cbr-fill" style="width:${Math.round((catTotals[c.id]||0)/maxVal*100)}%;background:${c.color}"></div></div>
     <span class="cbr-val">${fmt(catTotals[c.id]||0)} ₽</span></div>`).join('');
 
   const srcs=['Playerok','Funpay','Наличные','Карта','Другое'];
